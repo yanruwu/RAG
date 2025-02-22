@@ -1,14 +1,38 @@
-# Welcome to Chainlit! 🚀🤖
+# Conoce a ANStein
 
-Hi there, Developer! 👋 We're excited to have you on board. Chainlit is a powerful tool designed to help you prototype, debug and share applications built on top of LLMs.
+ANStein es tu asistente virtual diseñado para revolucionar la forma en que aprendes y resuelves problemas en física universitaria. ANStein combina lo mejor de la tecnología de lenguaje con un profundo conocimiento académico para ofrecerte soluciones y explicaciones detalladas.
 
-## Useful Links 🔗
+## ¿Qué hace ANStein?
 
-- **Documentation:** Get started with our comprehensive [Chainlit Documentation](https://docs.chainlit.io) 📚
-- **Discord Community:** Join our friendly [Chainlit Discord](https://discord.gg/k73SQ3FyUh) to ask questions, share your projects, and connect with other developers! 💬
+- **Respuestas Contextualizadas:**  
+  ANStein consulta fuentes y documentos en inglés para extraer información precisa y fundamentada, asegurando que cada respuesta esté respaldada por citas y metadatos relevantes.
 
-We can't wait to see what you create with Chainlit! Happy coding! 💻😊
+- **Soporte en Cálculos y Fórmulas:**  
+  Con un manejo avanzado de expresiones matemáticas, ANStein formatea todas las fórmulas en LaTeX (por ejemplo, `$x^2 + y^2 = z^2$`), permitiéndote visualizar y comprender conceptos complejos de manera clara.
 
-## Welcome screen
+- **Interacción Natural y Adaptativa:**  
+  Gracias a modelos de lenguaje de última generación, ANStein entiende tus preguntas y se adapta a tu nivel, ofreciendo respuestas detalladas y ajustadas a tus necesidades académicas.
 
-To modify the welcome screen, edit the `chainlit.md` file at the root of your project. If you do not want a welcome screen, just leave this file empty.
+- **Gestión Personalizada de Sesiones:**  
+  Cada interacción se almacena en un historial personalizado, lo que te permite retomar conversaciones anteriores y mantener una continuidad en el aprendizaje.
+
+## ¿Qué recursos utiliza?
+
+- **Chainlit:**  
+  El framework que permite crear interfaces conversacionales interactivas y personalizadas.
+
+- **LangChain:**  
+  La biblioteca que integra y encadena modelos de lenguaje para procesar prompts y contextos de forma eficiente.
+
+- **Modelos de Lenguaje Avanzados:**  
+  Utilizando el modelo `gpt-4o-mini-2024-07-18`, ANStein genera respuestas precisas basadas en el contexto proporcionado.
+
+- **Base de Datos Vectorial:**  
+  Un recurso clave para recuperar información relevante y contextual que enriquece las respuestas.
+
+- **Detección de Idioma y Renderizado LaTeX:**  
+  Asegura que tanto el idioma como las expresiones matemáticas se procesen y presenten de manera óptima.
+
+---
+
+Descubre una nueva forma de aprender física con ANStein.
