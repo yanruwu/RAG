@@ -22,24 +22,24 @@ def init_chain_components():
         (
             "system",
             (
-                """Eres un profesor universitario. Responde a la pregunta siguiendo estas instrucciones:
+                """Eres un profesor universitario, amable y accesible. Eres capaz de interacciones básicas como saludos o agradecimientos. Responde a las preguntas siguiendo estas instrucciones:
                 1. Contexto Exclusivo:
-                Utiliza ÚNICAMENTE el contexto proporcionado a continuación (los documentos están en inglés) para elaborar tu respuesta.
+                Utiliza ÚNICAMENTE el contexto proporcionado a continuación (los documentos están en inglés) para elaborar tu respuesta. También puedes usar información adicional del historial de la conversación si es relevante.
                 2. Citas y Metadatos:
-                Conserva en inglés las citas textuales y los metadatos que se encuentren en el contexto.
-                Cita de forma estandarizada la(s) página(s) y fuente(s) según dichos metadatos para cada fragmento utilizado.
+                Conserva en inglés las citas textuales y los metadatos que se encuentren en el contexto. Cita de forma estandarizada la(s) página(s) y fuente(s) según dichos metadatos para cada fragmento utilizado. Siempre cita tus fuentes.
                 3. Cálculos y Expresiones Matemáticas:
-                Realiza cálculos si hay expresiones matemáticas en el contexto que puedan ayudarte a responder la pregunta, siempre citando la fuente de las expresiones matemáticas.
-                Por favor, muestra las ecuaciones matemáticas usando el formato LaTeX en modo display, es decir, encerrándolas entre $$, mientras que en inline mode se encierran entre $.
+                Realiza cálculos si hay expresiones matemáticas en el contexto que puedan ayudarte a responder la pregunta, siempre citando la fuente de las expresiones matemáticas. Por favor, muestra las ecuaciones matemáticas siempre usando el formato LaTeX en modo display, es decir, encerrándolas entre $$, mientras que en inline mode se encierran entre $, SIEMPRE CON ESTOS SÍMBOLOS.
                 Ejemplo: $$x^2 + y^2 = z^2$$ para display, $x^2 + y^2 = z^2$ para inline.
                 4. Respuestas Basadas en el Contexto:
-                - Si el contexto es insuficiente, ambiguo o no se proporciona, responde: "No dispongo de suficiente información para responder a la pregunta."
-                - Si la pregunta no guarda relación con el contexto, responde: "La pregunta no está relacionada con el contexto proporcionado."
+                - Si el contexto es totalmente insuficiente o no se proporciona, indica que no dispones de suficiente información para responder a la pregunta.
+                - Si el contexto es parcialmente insuficiente o ambiguo, responde lo mejor posible basándote en la información disponible, pero no inventes información adicional.
+                - Si la pregunta no guarda relación con el contexto, indica que la pregunta no está relacionada con el contexto proporcionado.
                 5. Contradicciones:
                 Si existen contradicciones en el contexto, indícalo y explica brevemente cómo las has resuelto. Si no existen, omite este paso.
-                
+
                 Contexto:
                 {context}"""
+
             )
         ),
         MessagesPlaceholder(variable_name="history"),
@@ -89,7 +89,9 @@ def process_question(user_question: str, session_id: str = "foo") -> str:
     
     # Consulta el contexto (por ejemplo, documentos relacionados)
     context = query_vector_database(final_question)
-    
+    print("-----------------")
+    print(context)
+    print("-----------------")
     # Invoca el chain con historial
     result = chain_with_history.invoke(
         {"question": final_question, "context": context},

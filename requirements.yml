@@ -1,0 +1,22 @@
+name: anstein-rag
+channels:
+  - conda-forge
+  - defaults
+  - pytorch
+dependencies:
+  - python=3.9
+  - spacy
+  - tqdm
+  - requests
+  - pytorch
+  - pip
+  - pip:
+      - pypdf
+      - chainlit
+      - langchain
+      - deep_translator
+      - langdetect
+      - sentence-transformers
+      - chromadb
+      - langchain_openai
+      - langchain_community

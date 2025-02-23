@@ -15,8 +15,15 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 COLLECTION_NAME = "pdf_fragments"
 CHUNK_SIZE = 1000  # Número máximo de caracteres por fragmento
 
-# Cargar el modelo de spaCy para el chunking por nlp (python -m spacy download en_core_web_sm)
-nlp = spacy.load("en_core_web_sm")
+# Cargar el modelo de spaCy para el chunking (si no está instalado, se descarga)
+from spacy.cli import download
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    print("Model 'en_core_web_sm' not found. Downloading now...")
+    download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
 
 
 def spacy_chunk_text(text: str, chunk_size: int = CHUNK_SIZE) -> list:
@@ -47,9 +54,46 @@ def spacy_chunk_text(text: str, chunk_size: int = CHUNK_SIZE) -> list:
     return chunks
 
 
+def is_low_semantic_content(text: str, token_threshold: float = 0.35, min_sentences: int = 2, min_avg_tokens: int = 5) -> bool:
+    """
+    Determina si un fragmento de texto tiene bajo contenido semántico.
+    
+    Args:
+        text (str): Fragmento de texto a evaluar.
+        token_threshold (float): Proporción mínima de tokens significativos.
+        min_sentences (int): Número mínimo de oraciones.
+        min_avg_tokens (int): Número mínimo promedio de tokens por oración.
+        
+    Returns:
+        bool: True si el fragmento es considerado de bajo contenido, False en caso contrario.
+    """
+    doc = nlp(text)
+    sentences = list(doc.sents)
+    
+    # Si hay pocas oraciones, puede ser un índice o anexo
+    if len(sentences) < min_sentences:
+        return True
+
+    # Filtrar tokens significativos (excluyendo puntuación y números)
+    total_tokens = [token for token in doc if not token.is_space]
+    significant_tokens = [token for token in total_tokens if not token.is_punct and not token.like_num]
+
+    if not total_tokens:
+        return True  # Fragmento vacío
+
+    ratio_significant = len(significant_tokens) / len(total_tokens)
+    avg_tokens_per_sentence = sum(len([t for t in sent if not t.is_space]) for sent in sentences) / len(sentences)
+
+    if ratio_significant < token_threshold or avg_tokens_per_sentence < min_avg_tokens:
+        return True
+
+    return False
+
+
 def nlp_split_documents(documentos, chunk_size: int = CHUNK_SIZE):
     """
-    Aplica el chunking basado en spaCy a cada documento y devuelve una lista de nuevos Document.
+    Aplica el chunking basado en spaCy a cada documento, filtra fragmentos con bajo contenido semántico
+    y devuelve una lista de nuevos Document.
     
     Args:
         documentos (List[Document]): Documentos originales.
@@ -65,7 +109,10 @@ def nlp_split_documents(documentos, chunk_size: int = CHUNK_SIZE):
         # Generar fragmentos usando spaCy
         chunks = spacy_chunk_text(doc.page_content, chunk_size=chunk_size)
         for chunk in chunks:
-            # Se crea un nuevo documento conservando la metadata (aquí solo la página)
+            # Descartar fragmentos con bajo contenido semántico
+            if is_low_semantic_content(chunk):
+                continue
+            # Crear un nuevo documento conservando la metadata (aquí solo la página)
             new_docs.append(Document(page_content=chunk, metadata={"page": page}))
     return new_docs
 
@@ -91,7 +138,7 @@ def preprocess_pdf_directory(pdf_directory: str) -> None:
     for pdf_file in pdf_files:
         pdf_path = os.path.join(pdf_directory, pdf_file)
 
-        ## Normalizamos la ruta para que sea igual con la que aperece en metadatas
+        # Normalizamos la ruta para que sea igual que en las metadatas
         normalized_path = pdf_path.replace("\\", "/")        
         existing_embeddings = collection.get(
             where={"source": normalized_path},
@@ -102,6 +149,7 @@ def preprocess_pdf_directory(pdf_directory: str) -> None:
             continue
         else:
             print(f"Procesando el archivo: {pdf_file} ...")
+        
         # Función asíncrona para cargar el PDF
         async def cargar_pdf(ruta: str):
             print(f"Cargando el PDF: {ruta} ...")
@@ -112,10 +160,10 @@ def preprocess_pdf_directory(pdf_directory: str) -> None:
 
         documentos = asyncio.run(cargar_pdf(pdf_path))
 
-        # Aplicar chunking basado en spaCy a cada documento
+        # Aplicar chunking basado en spaCy a cada documento y filtrar fragmentos irrelevantes
         print("Dividiendo el contenido en fragmentos utilizando spaCy...")
         fragmentos = nlp_split_documents(documentos, chunk_size=CHUNK_SIZE)
-        print(f"Se han generado {len(fragmentos)} fragmentos.")
+        print(f"Se han generado {len(fragmentos)} fragmentos útiles.")
 
         # Limpiar fragmentos: reemplazar saltos de línea por espacios
         print("Limpiando fragmentos (reemplazando saltos de línea)...")
@@ -153,13 +201,16 @@ def preprocess_pdf_directory(pdf_directory: str) -> None:
     print("Proceso completado para todos los archivos en el directorio.")
 
 
-def query_vector_database(query: str) -> None:
+def query_vector_database(query: str) -> list:
     """
-    Realiza una consulta sobre la base de datos vectorial y muestra los 5 fragmentos
+    Realiza una consulta sobre la base de datos vectorial y muestra los fragmentos
     más similares a la query ingresada.
     
     Args:
         query (str): El prompt o consulta a buscar.
+    
+    Returns:
+        list: Lista de fragmentos relevantes con metadatos.
     """
     # Inicializar el cliente persistente y la colección
     client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
@@ -168,22 +219,18 @@ def query_vector_database(query: str) -> None:
     # Inicializar el modelo de embeddings
     embedding_model = SentenceTransformer(MODEL_NAME, device=DEVICE)
 
-    # print("Generando embedding para la consulta...")
     query_embedding = embedding_model.encode(query, show_progress_bar=False).tolist()
 
-    # print("\nBuscando los top 5 fragmentos más similares...")
     resultados = collection.query(
         query_embeddings=[query_embedding],
         n_results=15,
         include=["documents", "metadatas", "distances"]
     )
 
-    # print("\nResultados de la búsqueda:")
     results = []
     for idx, (doc, meta) in enumerate(zip(
             resultados["documents"][0],
             resultados["metadatas"][0])):
-        # Para darle un mejor contexto al RAG y nos permita obtener las fuentes
         results.append(doc + " || FRAGMENT INFO: " + str(meta) + "||")
     return results
 
@@ -195,15 +242,12 @@ def obtener_todos_los_sources() -> set:
     Returns:
         set: Un conjunto de sources únicos.
     """
-    # Inicializar el cliente persistente y la colección
     client = chromadb.PersistentClient(path=PERSIST_DIRECTORY)
     collection = client.get_or_create_collection(name=COLLECTION_NAME)
     
-    # Obtener todos los metadatos en la colección
     datos = collection.get(include=["metadatas"])
     
-    # Extraer todos los sources (rutas de PDF) de los metadatos
-    sources = set()  # Utiliza un set para evitar duplicados
+    sources = set()
     for metadata in datos["metadatas"]:
         for meta in metadata:
             source = meta.get("source")
@@ -215,4 +259,3 @@ def obtener_todos_los_sources() -> set:
         print(source)
     
     return sources
-

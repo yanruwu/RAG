@@ -33,7 +33,7 @@ edit_message = true
 
 # Authorize users to spontaneously upload files with messages
 [features.spontaneous_file_upload]
-    enabled = true
+    enabled = false
     # Define accepted file types using MIME types
     # Examples:
     # 1. For specific file types:
@@ -53,8 +53,8 @@ edit_message = true
 
 [UI]
 # Name of the assistant.
-name = "Assistant"
-
+name = "ANStein"
+github = "https://github.com/yanruwu/RAG"
 # default_theme = "dark"
 
 # layout = "wide"
@@ -94,3 +94,6 @@ cot = "full"
 
 [meta]
 generated_by = "2.2.1"
+
+[bot]
+icon = "/public/favicon.png"
