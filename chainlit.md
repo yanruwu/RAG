@@ -1,38 +1,55 @@
-# Conoce a ANStein
+# Bienvenido a ANStein Chat con Chainlit! 👋
 
-ANStein es tu asistente virtual diseñado para revolucionar la forma en que aprendes y resuelves problemas en física universitaria. ANStein combina lo mejor de la tecnología de lenguaje con un profundo conocimiento académico para ofrecerte soluciones y explicaciones detalladas.
-
-## ¿Qué hace ANStein?
-
-- **Respuestas Contextualizadas:**  
-  ANStein consulta fuentes y documentos en inglés para extraer información precisa y fundamentada, asegurando que cada respuesta esté respaldada por citas y metadatos relevantes.
-
-- **Soporte en Cálculos y Fórmulas:**  
-  Con un manejo avanzado de expresiones matemáticas, ANStein formatea todas las fórmulas en LaTeX (por ejemplo, `$x^2 + y^2 = z^2$`), permitiéndote visualizar y comprender conceptos complejos de manera clara.
-
-- **Interacción Natural y Adaptativa:**  
-  Gracias a modelos de lenguaje de última generación, ANStein entiende tus preguntas y se adapta a tu nivel, ofreciendo respuestas detalladas y ajustadas a tus necesidades académicas.
-
-- **Gestión Personalizada de Sesiones:**  
-  Cada interacción se almacena en un historial personalizado, lo que te permite retomar conversaciones anteriores y mantener una continuidad en el aprendizaje.
-
-## ¿Qué recursos utiliza?
-
-- **Chainlit:**  
-  El framework que permite crear interfaces conversacionales interactivas y personalizadas.
-
-- **LangChain:**  
-  La biblioteca que integra y encadena modelos de lenguaje para procesar prompts y contextos de forma eficiente.
-
-- **Modelos de Lenguaje Avanzados:**  
-  Utilizando el modelo `gpt-4o-mini-2024-07-18`, ANStein genera respuestas precisas basadas en el contexto proporcionado.
-
-- **Base de Datos Vectorial:**  
-  Un recurso clave para recuperar información relevante y contextual que enriquece las respuestas.
-
-- **Detección de Idioma y Renderizado LaTeX:**  
-  Asegura que tanto el idioma como las expresiones matemáticas se procesen y presenten de manera óptima.
+Esta es la interfaz interactiva para resolver tus dudas de física. Aquí te explicamos cómo usar la aplicación:
 
 ---
 
-Descubre una nueva forma de aprender física con ANStein.
+## 1. Selección del Módulo 📚
+
+Al iniciar la aplicación, verás una pantalla de bienvenida con botones para seleccionar el área de interés. Las opciones son, por ejemplo:
+- **Mecánica**
+- **Electromagnetismo**
+- **Termodinámica**
+- **Física Cuántica**
+- **General**
+
+Selecciona el módulo que se ajuste a tu consulta para que las respuestas se adapten al contexto del área.
+
+---
+
+## 2. Plantea tu Pregunta 🤔
+
+Después de seleccionar el módulo, escribe tu pregunta en el cuadro de texto y presiona **"Enviar"**. El asistente utilizará el contexto del módulo y la información preprocesada para generar una respuesta.
+
+---
+
+## 3. Respuestas y Conversación 💬
+
+- **Interacción Dinámica:**  
+  El asistente responde a tus preguntas y mantiene un historial de conversación para mejorar el contexto de futuras interacciones.
+
+- **Edición de Mensajes:**  
+  Si es necesario, puedes editar tus mensajes para ajustar o corregir tu consulta.
+
+---
+
+## 4. Consejos de Uso ⭐
+
+- **Sé Específico:**  
+  Formula preguntas claras y detalladas para obtener respuestas precisas.
+  
+- **Reformula si es Necesario:**  
+  Si la respuesta no es clara, intenta reformular tu pregunta o pide una aclaración.
+
+- **Retroalimentación:**  
+  Tu opinión es muy importante. Si encuentras algún problema o tienes sugerencias, ¡no dudes en compartirlo!
+
+---
+
+## 5. Seguridad y Privacidad 🔒
+
+Recuerda que para que el modelo funcione correctamente, es necesario configurar una clave de OPENAI. Asegúrate de haberla colocado en el archivo `.env` al iniciar el proyecto.
+
+---
+
+¡Disfruta la experiencia y aprende más sobre física con ANStein! 😊
