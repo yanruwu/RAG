@@ -56,7 +56,7 @@ async def main(message: str):
     module = cl.user_session.get("module")
     prompt_module_text = f"Answer in the context of: {module}."
     session_id = cl.user_session.get("id")
-    print(prompt_module_text)
+    # print(prompt_module_text)
     if module:
         response = process_question(message.content + prompt_module_text, session_id=session_id)
     else:

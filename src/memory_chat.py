@@ -80,18 +80,18 @@ def process_question(user_question: str, session_id: str = "foo") -> str:
     """
     # Detecta el idioma de la pregunta
     language = detect(user_question)
-    print(language)
+    # print(language)
     if language == "es": 
         # Traduce la pregunta al inglés para mejor búsqueda con embedding (así nos ahorramos tener que usar un modelo multilingüe)
         user_question = GoogleTranslator(source=language, target="en").translate(user_question)
     language_prompt = f"Answer in {language}:"
-    final_question = f"{language_prompt} {user_question}. Remember the math formatting rules."
+    final_question = f"{language_prompt} {user_question}. Remember the math formatting rules and to cite your sources."
     
     # Consulta el contexto (por ejemplo, documentos relacionados)
     context = query_vector_database(final_question)
-    print("-----------------")
-    print(context)
-    print("-----------------")
+    # print("-----------------")
+    # print(context)
+    # print("-----------------")
     # Invoca el chain con historial
     result = chain_with_history.invoke(
         {"question": final_question, "context": context},

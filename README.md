@@ -27,23 +27,21 @@ El sistema combina la descarga y el preprocesamiento de documentos (PDFs) con la
 
 ## Estructura del Proyecto 📁
 ```
-Directory structure:
 └── yanruwu-rag/
     ├── README.md
-    ├── chainlit.md
-    ├── main.py
-    ├── requirements.yml
-    ├── urls.txt
-    ├── chroma_db/
-    ├── public/
-    │   └── avatars/
-    ├── src/
-    │   ├── doc_load.py
-    │   ├── memory_chat.py
-    │   └── preprocessing.py
-    └── .chainlit/
-        ├── config.toml
-        └── translations/
+    ├── chainlit.md          # Guía de usuario para la interfaz Chainlit.
+    ├── main.py              # Script principal: descarga, preprocesamiento y chat.
+    ├── requirements.yml     # Lista de dependencias.
+    ├── urls.txt             # URLs de los PDFs a descargar.
+    ├── chroma_db/          # Base de datos vectorial (ChromaDB).
+    ├── public/             # Recursos públicos.
+    ├── src/                # Código fuente del proyecto.
+    │   ├── doc_load.py      # Descarga de PDFs.
+    │   ├── memory_chat.py   # Configuración del chat y manejo del historial.
+    │   └── preprocessing.py # Preprocesamiento: fragmentación, limpieza y generación de embeddings.
+    └── .chainlit/          # Configuración de Chainlit.
+        ├── config.toml      # Ajustes de la interfaz.
+        └── translations/    # Archivos de traducción de chainlit.
 ```
 
 ---
@@ -105,6 +103,20 @@ La configuración de preprocesamiento y consulta se define en ``src/preprocessin
 - **Modelos y API:**
 En ``src/memory_chat.py`` se configura el modelo de lenguaje (por ejemplo, ChatOpenAI con modelo ``gpt-4o-mini-2024-07-18``).
 ---
+
+## Ejemplo
+El inicio de chat da la opción de elegir el área concreta para basar la respuesta.
+
+![Inicio de chat](/public/imgs/test1.png)
+
+Podemos seguir conversando con el chatbot, el cual mantiene la memoria de la conversación:
+
+![Demostración de memoria](/public/imgs/test2.png)
+
+Además, las expresiones matemáticas se formatean con LaTeX, lo que permite una muestra clara y entendible. El modelo también provee las fuentes de donde saca la información para permitir al usuario consultarlas por sí mismo.
+
+---
+
 ## Contribuciones 🤝
 Si deseas contribuir al proyecto, siéntete libre de abrir issues o pull requests. Las contribuciones para mejorar la funcionalidad, la documentación o la traducción a otros idiomas serán muy bien recibidas.
 
